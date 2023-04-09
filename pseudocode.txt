@@ -1,2 +1,0 @@
-render an input initially
-on submit render the initial input while remaining the old inputs and responds

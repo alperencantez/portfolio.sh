@@ -1,27 +1,70 @@
 import InputArea from '@/components/InputArea';
-import { FormEvent, useState } from 'react';
-import Main from '@/components/Main';
+import { DisplayCommandT, HistoryElementT } from '@/types/root';
+import { MainContext } from './_app';
+import { useContext } from 'react';
 import Head from 'next/head';
 
 export default function Home() {
-  const [historyRecord, setHistoryRecord] = useState<Array<JSX.Element>>([<Main />]);
-  const [isClear, setIsClear] = useState<boolean>(false);
+  const { history } = useContext(MainContext);
 
-  const handleForm = (e: FormEvent) => {
-    console.log(historyRecord);
-    e.preventDefault();
+  const invalidCommands: Array<string> = [
+    'cd',
+    'rm',
+    'rf',
+    'mkdir',
+    'touch',
+    'sudo',
+    'cat',
+    'node',
+    'npm',
+    'git',
+    'env',
+    'py',
+    'python',
+  ];
 
-    if (isClear) {
-      setHistoryRecord([<Main />]);
+  const validCommands: Array<DisplayCommandT> = [
+    {
+      cmd: 'pwd',
+      res: '/home/user/cantez',
+    },
+    {
+      cmd: 'cd',
+      res: 'Permission Denied.',
+    },
+    {
+      cmd: 'ps intro',
+      res: 'Hi there I\'m Alperen, a full-stack developer. Welcome to my porfolio site! Use "ps ls" to see other commands to navigate in this website.',
+    },
+    {
+      cmd: 'npm',
+      res: 'npm: unresolved package',
+    },
+    {
+      cmd: 'ls',
+      res: `.next\nnode_modules\npublic\nsrc\nstyles\n.gitignore\n.prettierrc\nnext-env.d.ts\nnext.config.js\npackage-lock.json\npackage.json\nroot.d.ts\ntsconfig.json\nyarn.lock
+      `,
+    },
+    {
+      cmd: 'ps ls',
+      res: 'ps about\nps social\nps forkme\nps ls (recursive)\n',
+    },
+    {
+      cmd: 'ps social',
+      res: 'linkedin: https://www.linkedin.com/in/alperencantez\ngithub: https://github.com/alperencantez\nemail: alperen.cantez@outlook.com\n',
+    },
+    {
+      cmd: 'ps forkme',
+      res: 'thank you for your interest in this project!\nthe repo: https://github.com/alperencantez/portfolio.sh',
+    },
+    {
+      cmd: 'ps about',
+      res: "I'm a self-taught web developer who is mainly passionate about JavaScript technologies.\nMy journey started back in 2020 wondering what really programming is and I've been learning and building ever since.\nI am currently working as a fullstack web developer at Areon Network and improving my ML/DL skills in my free time.\n\nTech Stack\n-------------\nFront-end -> React/React Native, Next.js, TailwindCSS, SASS/SCSS, Vue.js\nBack-end -> Node.js (Express), SQL (MYSSQL - Postgres), Python (Flask - FastAPI), MongoDB\n\nFluent In\n-------------\nJavaScript, TypeScript, Python, Dart\n\nTools\n-------------\nVersion Control (Git) - Postman - Bash\n\n",
+    },
+  ];
 
-      setIsClear(false);
-    } else {
-      setHistoryRecord([...historyRecord, <Main />]);
-    }
-  };
-
-  const handleData = (fromChild: string) => {
-    if (fromChild == 'clear') setIsClear(true);
+  const invalidityChecker = (checkStr: string): number => {
+    return invalidCommands.findIndex((item: string) => item == checkStr);
   };
 
   return (
@@ -34,11 +77,39 @@ export default function Home() {
       </Head>
 
       <div>
-        {historyRecord.map((el, idx) => (
-          <form onSubmit={handleForm} key={idx}>
-            <Main onData={handleData} />
-          </form>
-        ))}
+        {history.map((item: HistoryElementT, idx: number) => {
+          const promptAsArray = item.prompt.split(' ');
+          let invalidMessage: string = '';
+
+          for (let arg of promptAsArray) {
+            const idx: number = invalidityChecker(arg);
+
+            if (idx !== -1) {
+              invalidMessage = 'Permission Denied';
+              break;
+            }
+          }
+
+          return (
+            <div key={idx}>
+              <div style={{ display: 'flex' }}>
+                <label htmlFor='input'>
+                  <code style={{ color: '#30d904', fontWeight: 500 }}>root@cantez</code>
+                  :∼$
+                </label>
+                <input type='text' id='input' width='full' value={item.prompt} disabled spellCheck='false' />
+              </div>
+
+              <pre style={{ margin: 0, wordWrap: 'break-word' }}>
+                {invalidMessage}
+                {invalidityChecker(item.prompt) == -1 &&
+                  validCommands.map((command) => item.prompt == command.cmd && command.res)}
+              </pre>
+            </div>
+          );
+        })}
+
+        <InputArea />
       </div>
     </>
   );

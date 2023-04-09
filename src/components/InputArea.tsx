@@ -1,61 +1,57 @@
-import React, { FormEvent, useState } from 'react';
-import { InputAreaOptions } from '@/types/root';
+import React, { FormEvent, useState, useContext } from 'react';
+import { MainContext } from '@/pages/_app';
+import { CommandType } from '@/types/root';
 
 const InputArea = () => {
-  const [response, setResponse] = useState<string>('');
-  const [options, setOptions] = useState<InputAreaOptions>({
-    commands: [],
+  const { history, setHistory } = useContext(MainContext);
+  const [commandVal, setCommandVal] = useState<CommandType>({
+    prompt: '',
+    response: '',
     isDisabled: false,
-    inputValue: '',
   });
+
+  const incomingCommand: Array<object> = [...history];
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    let newCommands: Array<JSX.Element> = options.commands.slice();
+    // Don't render a new line if the input is an empty string or null
+    const pattern: RegExp = /^(?!\s+$)[a-zA-Z1-9_\s\-\.]+$/;
+    if (!pattern.test(commandVal.prompt)) return;
 
-    if (options.inputValue.includes('sudo')) {
-      setResponse('Permission denied.');
-    } else if (options.inputValue == 'clear') {
-      newCommands = [];
-    } else {
-      setResponse('ERROR: Invalid key');
-      console.log(options);
-    }
+    commandVal.prompt == 'clear'
+      ? (incomingCommand.length = 0)
+      : incomingCommand.push({ prompt: commandVal.prompt, response: commandVal.response });
 
-    newCommands.push(<InputArea />);
-    setOptions({ ...options, commands: newCommands, isDisabled: !options.isDisabled });
+    setHistory(incomingCommand);
+    setCommandVal({ ...commandVal, prompt: '' });
   };
 
   return (
-    <>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <form style={{ display: 'flex' }} onSubmit={handleSubmit}>
-          <label htmlFor='input'>
-            <code style={{ color: '#30d904', fontWeight: 500 }}>root@cantez</code>
-            :∼$
-          </label>
-          <input
-            type='text'
-            id='input'
-            width='full'
-            value={options.inputValue}
-            onChange={(e) => {
-              setOptions({
-                ...options,
-                inputValue: e.target.value,
-              });
-            }}
-            autoComplete='off'
-            autoFocus
-            disabled={options.isDisabled}
-          />
-        </form>
-
-        <div>{response}</div>
-        <div>{options.commands}</div>
-      </div>
-    </>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <form style={{ display: 'flex' }} onSubmit={handleSubmit}>
+        <label htmlFor='input'>
+          <code style={{ color: '#30d904', fontWeight: 500 }}>root@cantez</code>
+          :∼$
+        </label>
+        <input
+          type='text'
+          id='input'
+          width='full'
+          value={commandVal.prompt}
+          onChange={(e) => {
+            setCommandVal({
+              ...commandVal,
+              prompt: e.target.value,
+            });
+          }}
+          autoComplete='off'
+          autoFocus
+          disabled={commandVal.isDisabled}
+          spellCheck='false'
+        />
+      </form>
+    </div>
   );
 };
 
