@@ -29,10 +29,6 @@ export default function Home() {
       res: '/home/user/cantez',
     },
     {
-      cmd: 'cd',
-      res: 'Permission Denied.',
-    },
-    {
       cmd: 'ps intro',
       res: 'Hi there I\'m Alperen, a full-stack developer. Welcome to my porfolio site! Use "ps ls" to see other commands to navigate in this website.',
     },
