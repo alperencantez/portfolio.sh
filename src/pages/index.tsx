@@ -9,11 +9,8 @@ export default function Home() {
 
   const invalidCommands: Array<string> = [
     'cd',
-    'rm',
-    'rf',
     'mkdir',
     'touch',
-    'sudo',
     'cat',
     'node',
     'npm',
@@ -29,8 +26,12 @@ export default function Home() {
       res: '/home/user/cantez',
     },
     {
+      cmd: 'sudo rm -rf',
+      res: 'Nice try fella',
+    },
+    {
       cmd: 'ps intro',
-      res: 'Hi there I\'m Alperen, a full-stack developer. Welcome to my porfolio site! Use "ps ls" to see other commands to navigate in this website.',
+      res: 'Hi there I\'m Alperen, a blockchain developer. Welcome to my nerdy-looking porfolio! Use "ps ls" to see other commands to navigate in this website.',
     },
     {
       cmd: 'npm',
@@ -55,7 +56,7 @@ export default function Home() {
     },
     {
       cmd: 'ps about',
-      res: "I'm a self-taught web developer who is mainly passionate about JavaScript technologies.\nMy journey started back in 2020 wondering what really programming is and I've been learning and building ever since.\nI am currently working as a fullstack web developer at Areon Network and improving my ML/DL skills in my free time.\n\nTech Stack\n-------------\nFront-end -> React/React Native, Next.js, TailwindCSS, SASS/SCSS, Vue.js\nBack-end -> Node.js (Express), SQL (MYSSQL - Postgres), Python (Flask - FastAPI), MongoDB\n\nFluent In\n-------------\nJavaScript, TypeScript, Python, Dart\n\nTools\n-------------\nVersion Control (Git) - Postman - Bash\n\n",
+      res: "I'm a self-taught software developer who is mainly passionate about JavaScript technologies.\nMy journey started back in 2020 wondering what really programming is and I've been learning and building ever since.\nI am currently working as a blockchain developer at Areon Network and improving my core-blockchain skills in my spare time.\n\nTech Stack\n-------------\nFront-end -> React/React Native, Next.js, TailwindCSS, SASS/SCSS, Vue.js\nBack-end -> Node.js (Express), SQL (MYSSQL - Postgres), Python (Flask - FastAPI), MongoDB\n\nFluent In\n-------------\nJavaScript/TypeScript, Python, Go\n\nTools\n-------------\nVersion Control (Git) - API Testing - Bash\n\n",
     },
   ];
 
